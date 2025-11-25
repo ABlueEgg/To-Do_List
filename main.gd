@@ -13,8 +13,7 @@ extends Control
 var notification_delay_minutes: int = 10
 	
 func _ready():
-	add_task_button.text = "Add Task"
-	add_task_button.pressed.connect(_on_add_task_pressed)
+	add_task_button.pressed.connect(_on_add_task_button_pressed)
 	
 	var popup = menu_button.get_popup()
 	# make items bigger
@@ -35,7 +34,7 @@ func _ready():
 	apply_large_font(notifications_popup, 30)
 	apply_large_font(reminder_dialog, 30)
 	
-func _on_add_task_pressed():
+func _on_add_task_button_pressed():
 	var new_task_line_edit = _add_task("")
 	print("button pressed")
 	
@@ -90,7 +89,7 @@ func _add_task(task_text: String) -> LineEdit:
 	
 	# Get the font used in the LineEdit
 	# This is a bit safer as it gets the default LineEdit font
-	var font: Font = line.get_theme_font("font", "LineEdit") 
+	var _font: Font = line.get_theme_font("font", "LineEdit") 
 	
 	# Connect text_changed signal to the helper function and bind the LineEdit and Font
 	line.text_changed.connect(Callable(self, "_scale_line_edit_to_text").bind(line))
@@ -170,19 +169,19 @@ func _share_list():
 		arr.append("%s [%s]" % [t, status])
 	print("Sharing List:\n" + "\n".join(arr))
 	
-func scale_up_tasks_container(size: int = 24):
+func scale_up_tasks_container(font_size: int = 24):
 	for row in tasks_container.get_children():
 		if row is HBoxContainer:
 			for child in row.get_children():
 				if child is CheckBox:
 					child.add_theme_font_size_override("font_size", size)
-					child.custom_minimum_size = Vector2(0, size + 10)
+					child.custom_minimum_size = Vector2(0, font_size + 10)
 				elif child is LineEdit:
 					child.add_theme_font_size_override("font_size", size)
-					child.custom_minimum_size = Vector2(0, size + 10)
+					child.custom_minimum_size = Vector2(0, font_size + 10)
 	
 # Recursively apply larger fonts to Controls under a node 
-func apply_large_font(node: Node, size: int = 24) -> void:
+func apply_large_font(node: Node, font_size: int = 24) -> void:
 	if node is Control: 
 		node.add_theme_font_size_override("font_size", size)
 	
@@ -193,7 +192,7 @@ func apply_large_font(node: Node, size: int = 24) -> void:
 			line_edit.add_theme_font_size_override("font_size", size)
 	
 	for child in node.get_children():
-		apply_large_font(child, size)
+		apply_large_font(child, font_size)
 	
 func _scale_line_edit_to_text(_new_text: String, line_edit: LineEdit) -> void:
 	# Get font, text, size, and stylebox from the LineEdit object
