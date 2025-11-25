@@ -13,8 +13,6 @@ extends Control
 var notification_delay_minutes: int = 10
 	
 func _ready():
-	add_task_button.pressed.connect(_on_add_task_button_pressed)
-	
 	var popup = menu_button.get_popup()
 	# make items bigger
 	popup.add_theme_font_size_override("font_size", 30)
@@ -174,22 +172,22 @@ func scale_up_tasks_container(font_size: int = 24):
 		if row is HBoxContainer:
 			for child in row.get_children():
 				if child is CheckBox:
-					child.add_theme_font_size_override("font_size", size)
+					child.add_theme_font_size_override("font_size", font_size)
 					child.custom_minimum_size = Vector2(0, font_size + 10)
 				elif child is LineEdit:
-					child.add_theme_font_size_override("font_size", size)
+					child.add_theme_font_size_override("font_size", font_size)
 					child.custom_minimum_size = Vector2(0, font_size + 10)
 	
 # Recursively apply larger fonts to Controls under a node 
 func apply_large_font(node: Node, font_size: int = 24) -> void:
 	if node is Control: 
-		node.add_theme_font_size_override("font_size", size)
+		node.add_theme_font_size_override("font_size", font_size)
 	
 	# Also handle sub-controls like the LineEdit inside SpinBox
 	if node is SpinBox:
 		var line_edit = node.get_line_edit()
 		if line_edit:
-			line_edit.add_theme_font_size_override("font_size", size)
+			line_edit.add_theme_font_size_override("font_size", font_size)
 	
 	for child in node.get_children():
 		apply_large_font(child, font_size)
