@@ -48,13 +48,15 @@ func _on_task_toggled(pressed: bool, row: Node) -> void:
 		return
 	
 	# Assuming LineEdit is the second child (index 1) of the HBoxContainer (row)
-	var line_edit = row.get_child(1) if row.get_child_count() > 1 else null
-	
+	var line_edit: LineEdit = null
+	for child in row.get_children():
+		if child is LineEdit:
+			line_edit = child
+			break
 	if pressed:
 		# Move to the bottom of the list
 		var last_index = tasks_container.get_child_count() - 1
 		tasks_container.move_child(row, last_index)
-	
 		if line_edit:
 			line_edit.editable = false
 			line_edit.focus_mode = Control.FOCUS_NONE # Prevents cursor from appearing
@@ -91,10 +93,10 @@ func _add_task(task_text: String) -> LineEdit:
 	var font: Font = line.get_theme_font("font", "LineEdit") 
 	
 	# Connect text_changed signal to the helper function and bind the LineEdit and Font
-	line.text_changed.connect(Callable(self, "_scale_line_edit_to_text").bind(line, font))
+	line.text_changed.connect(Callable(self, "_scale_line_edit_to_text").bind(line))
 	
 	# Initial scale call for placeholder/default text
-	_scale_line_edit_to_text(task_text, line, font)
+	_scale_line_edit_to_text(task_text, line)
 	
 	row.add_child(cb)
 	row.add_child(line)
@@ -193,23 +195,21 @@ func apply_large_font(node: Node, size: int = 24) -> void:
 	for child in node.get_children():
 		apply_large_font(child, size)
 	
-func _scale_line_edit_to_text(new_text: String, line_edit: LineEdit, font: Font) -> void:
+func _scale_line_edit_to_text(_new_text: String, line_edit: LineEdit) -> void:
+	# Get font, text, size, and stylebox from the LineEdit object
+	var font: Font = line_edit.get_theme_font("font", "LineEdit")
 	if not is_instance_valid(font):
 		return
-		
+	var new_text = line_edit.text
 	var font_size: int = line_edit.get_theme_font_size("font_size")
 	var stylebox: StyleBox = line_edit.get_theme_stylebox("normal")
 	var padding_x = stylebox.get_margin(SIDE_LEFT) + stylebox.get_margin(SIDE_RIGHT)
-	
 	var text_width = font.get_string_size(new_text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
-	
-	var final_width = text_width + padding_x + 10.0 # 10 is a small buffer
-	
+	var final_width = text_width + padding_x + 10.0
 	final_width = max(final_width, 150.0) 
-	
 	var current_height = line_edit.custom_minimum_size.y if line_edit.custom_minimum_size.y > 0 else line_edit.size.y
 	line_edit.custom_minimum_size = Vector2(final_width, current_height)
-	
+
 func _on_task_edit_finished(_text, line_edit: LineEdit):
 	line_edit.release_focus()
 	if line_edit.text.strip_edges() == "":
@@ -217,7 +217,7 @@ func _on_task_edit_finished(_text, line_edit: LineEdit):
 		if is_instance_valid(row) and row.get_parent() == tasks_container:
 			row.queue_free()
 			
-func _on_set_notification_pressed_from_lineedit(line_edit: LineEdit = null):
+func _on_set_notification_pressed_from_lineedit(_text_or_null = null):
 	var v_container = notifications_popup.get_child(0)
 	var minutes_input = v_container.get_child(1) if v_container.get_child_count() >= 2 else null
 	if minutes_input and minutes_input is LineEdit:
@@ -227,4 +227,3 @@ func _on_set_notification_pressed_from_lineedit(line_edit: LineEdit = null):
 		notification_timer.start(notification_delay_minutes * 60.0)
 		print("Notification set for %d minutes" % notification_delay_minutes)
 		notifications_popup.hide()
-#testing if this works
