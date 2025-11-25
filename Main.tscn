@@ -25,7 +25,7 @@ theme_override_font_sizes/font_size = 75
 placeholder_text = "List Title"
 alignment = 1
 
-[node name="add task button" type="Button" parent="."]
+[node name="AddTaskButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -33,9 +33,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -158.5
-offset_top = -160.0
+offset_top = -194.0
 offset_right = 158.5
-offset_bottom = -46.0
+offset_bottom = -80.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 50
@@ -65,7 +65,7 @@ anchor_bottom = 0.486
 offset_left = -254.0
 offset_top = -366.92
 offset_right = 295.0
-offset_bottom = 596.08
+offset_bottom = 665.08
 
 [node name="TaskContainer" type="VBoxContainer" parent="ScrollContainer"]
 layout_mode = 2
@@ -77,4 +77,4 @@ size = Vector2i(200, 200)
 
 [node name="Timer" type="Timer" parent="."]
 
-[connection signal="pressed" from="add task button" to="." method="_on_add_task_button_pressed"]
+[connection signal="pressed" from="AddTaskButton" to="." method="_on_add_task_button_pressed"]

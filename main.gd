@@ -32,14 +32,6 @@ func _ready():
 	apply_large_font(notifications_popup, 30)
 	apply_large_font(reminder_dialog, 30)
 	
-func _on_add_task_button_pressed():
-	var new_task_line_edit = _add_task("")
-	print("button pressed")
-	
-	if new_task_line_edit:
-		new_task_line_edit.grab_focus()
-		new_task_line_edit.select_all()
-	
 func _on_task_toggled(pressed: bool, row: Node) -> void:
 	if not is_instance_valid(row) or row.get_parent() != tasks_container:
 		return
@@ -224,3 +216,12 @@ func _on_set_notification_pressed_from_lineedit(_text_or_null = null):
 		notification_timer.start(notification_delay_minutes * 60.0)
 		print("Notification set for %d minutes" % notification_delay_minutes)
 		notifications_popup.hide()
+
+
+func _on_add_task_button_pressed() -> void:
+	var new_task_line_edit = _add_task("")
+	print("button pressed")
+	
+	if new_task_line_edit:
+		new_task_line_edit.grab_focus()
+		new_task_line_edit.select_all()
